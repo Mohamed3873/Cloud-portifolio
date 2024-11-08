@@ -13,22 +13,29 @@ resource "google_sql_database_instance" "my_mysql_instance" {
   settings {
     tier = "db-f1-micro"
 
+
     ip_configuration {
-      ipv4_enabled = true                                  # Enables public IP, adjust as needed for security
+      ipv4_enabled = true
+
+      authorized_networks {
+        name  = "my-office-network"
+        value = " 129.241.236.225"
+      }
     }
   }
-}
 
-# Define the MySQL user password
+  # Define the MySQL user password
+  }
 resource "google_sql_user" "my_mysql_user" {
-  instance   = google_sql_database_instance.my_mysql_instance.name
-  name       = "cloud"                                     # Username for MySQL
-  password   = var.db_password                           # Password (choose a secure one)
-  host       = "%"                                          # Allows access from any IP (useful for testing, adjust as needed for production)
-}
+    instance = google_sql_database_instance.my_mysql_instance.name
+    name     = "cloud"                                     # Username for MySQL
+    password = var.db_password                           # Password (choose a secure one)
+    host     = "%"
+    # Allows access from any IP (useful for testing, adjust as needed for production)
+  }
 
-# Create a database in the MySQL instance
-resource "google_sql_database" "my_database" {
-  name     = "terraform_database"                                  # Name of your database
-  instance = google_sql_database_instance.my_mysql_instance.name
-}
+  # Create a database in the MySQL instance
+  resource "google_sql_database" "my_database" {
+    name     = "terraform_database"                                  # Name of your database
+    instance = google_sql_database_instance.my_mysql_instance.name
+  }
