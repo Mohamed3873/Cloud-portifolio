@@ -3,10 +3,10 @@ name: Terraform Deployment Pipeline
 on:
   push:
     branches:
-      - main     # Trigger the pipeline when changes are pushed to the main branch
+      - main
   pull_request:
     branches:
-      - main     # Trigger on PR to the main branch as well
+      - main
 
 jobs:
   terraform:
@@ -16,19 +16,26 @@ jobs:
     - name: Checkout the repository
       uses: actions/checkout@v2
 
+    - name: Verify `.tf` files exist
+      run: ls -al terraform
+      # Lists files in the terraform directory to confirm presence of .tf files
+
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 1.3.7   # Specify your desired Terraform version
+        terraform_version: 1.3.7
 
     - name: Terraform Init
       run: terraform init
+      working-directory: ./terraform
 
     - name: Terraform Plan
       run: terraform plan -out=tfplan
+      working-directory: ./terraform
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
+      working-directory: ./terraform
 
     - name: Output Terraform Apply result
       run: echo "Terraform apply completed successfully"
