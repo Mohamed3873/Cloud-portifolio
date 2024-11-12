@@ -4,7 +4,4 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "gcp_credentials" {
-  type        = string
-  description = "The GCP credentials in Base64 encoding"
-}
+
