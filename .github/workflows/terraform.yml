@@ -24,6 +24,16 @@ jobs:
     - name: Setup GCP Credentials
       run: printf '%s' "${{ secrets.GOOGLE_CREDENTIALS }}" > /tmp/credentials.json
       shell: bash
+      
+    - name: Check GOOGLE_CREDENTIALS Length
+      run: |
+        if [ -z "${{ secrets.GOOGLE_CREDENTIALS }}" ]; then
+          echo "GOOGLE_CREDENTIALS secret is empty or missing"
+          exit 1
+        else
+          echo "GOOGLE_CREDENTIALS secret length: ${#${{ secrets.GOOGLE_CREDENTIALS }}}"
+        fi
+
 
     - name: Validate JSON File Exists and Is Non-Empty
       run: |
