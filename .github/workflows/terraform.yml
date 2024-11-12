@@ -26,7 +26,8 @@ jobs:
       working-directory: ./src/main/terraform
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan
+      env: TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+      run: terraform plan -input=false -out=tfplan
       working-directory: ./src/main/terraform
 
     - name: Terraform Apply
