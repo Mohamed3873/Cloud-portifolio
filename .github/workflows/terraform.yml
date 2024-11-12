@@ -23,12 +23,12 @@ jobs:
 
     - name: Setup GCP Credentials
       run: |
-        if [ -z "${{ secrets.GOOGLE_CREDENTIALS }}" ]; then
+        if [ -z "${{ secrets.GCP_CREDENTIALS }}" ]; then
           echo "GOOGLE_CREDENTIALS secret is empty or missing"
           exit 1
         else
-          echo "Writing GOOGLE_CREDENTIALS to /tmp/credentials.json"
-          printf '%s' "${{ secrets.GOOGLE_CREDENTIALS }}" > /tmp/credentials.json
+          echo "Writing GCP_CREDENTIALS to /tmp/credentials.json"
+          printf '%s' "${{ secrets.GCP_CREDENTIALS }}" > /tmp/credentials.json
           echo "GOOGLE_CREDENTIALS file created successfully"
         fi
       shell: bash
@@ -49,7 +49,7 @@ jobs:
 
     - name: Check GOOGLE_CREDENTIALS Length
       run: |
-        if [ -z "${{ secrets.GOOGLE_CREDENTIALS }}" ]; then
+        if [ -z "${{ secrets.GCP_CREDENTIALS }}" ]; then
           echo "GOOGLE_CREDENTIALS secret is empty or missing"
           exit 1
         else
