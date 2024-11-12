@@ -28,6 +28,7 @@ jobs:
     - name: Terraform Plan
       env:
         TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }} 
       run: terraform plan -input=false -out=tfplan
       working-directory: ./src/main/terraform
 
