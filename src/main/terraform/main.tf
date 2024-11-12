@@ -1,6 +1,6 @@
 # Configure the Google Cloud provider
 provider "google" {
-  credentials = jsondecode(base64decode(var.gcp_credentials))
+  credentials = var.gcp_credentials
   project     = "awesome-destiny-436710-j1"
   region      = "europe-west1"
 }
