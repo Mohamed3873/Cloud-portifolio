@@ -22,11 +22,30 @@ jobs:
         terraform_version: 1.3.7
 
     - name: Setup GCP Credentials
-      run: printf '%s' "${{ secrets.GOOGLE_CREDENTIALS }}" > /tmp/credentials.json
+      run: |
+        if [ -z "${{ secrets.GOOGLE_CREDENTIALS }}" ]; then
+          echo "GOOGLE_CREDENTIALS secret is empty or missing"
+          exit 1
+        else
+          echo "Writing GOOGLE_CREDENTIALS to /tmp/credentials.json"
+          printf '%s' "${{ secrets.GOOGLE_CREDENTIALS }}" > /tmp/credentials.json
+          echo "GOOGLE_CREDENTIALS file created successfully"
+        fi
+      shell: bash
+
+    - name: Verify GCP Credentials File
+      run: |
+        if [ ! -s /tmp/credentials.json ]; then
+          echo "Credentials file is empty or does not exist"
+          exit 1
+        else
+          echo "Credentials file successfully created with size $(stat -c%s /tmp/credentials.json) bytes"
+        fi
       shell: bash
 
     - name: Debug Environment
       run: env | sort
+
 
     - name: Check GOOGLE_CREDENTIALS Length
       run: |
