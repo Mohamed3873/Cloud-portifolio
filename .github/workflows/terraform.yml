@@ -16,10 +16,6 @@ jobs:
     - name: Checkout the repository
       uses: actions/checkout@v2
 
-    - name: Verify `.tf` files exist
-      run: ls -al terraform
-      # Lists files in the terraform directory to confirm presence of .tf files
-
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
       with:
@@ -32,7 +28,6 @@ jobs:
     - name: Terraform Plan
       run: terraform plan -out=tfplan
       working-directory: ./src/main/terraform
-
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
