@@ -1,6 +1,5 @@
 # Configure the Google Cloud provider
 provider "google" {
-  credentials = file("/tmp/credentials.json")
   project     = "awesome-destiny-436710-j1"
   region      = "europe-west1"
 }
