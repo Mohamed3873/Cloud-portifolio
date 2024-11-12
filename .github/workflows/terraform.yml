@@ -56,13 +56,10 @@ jobs:
     - name: Terraform Plan
       env:
         TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        GOOGLE_APPLICATION: /tmp/gcp_credentials.json  # Point to the credentials file
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json  # Point to the credentials file
       run: terraform plan
       working-directory: ./src/main/terraform
 
     - name: Terraform Apply
-      env:
-        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        GOOGLE_APPLICATION: /tmp/gcp_credentials.json  # Point to the credentials file
       run: terraform apply -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}"
       working-directory: ./src/main/terraform
