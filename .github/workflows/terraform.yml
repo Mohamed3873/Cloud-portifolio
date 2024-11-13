@@ -60,11 +60,12 @@ jobs:
       run: terraform plan
       working-directory: ./src/main/terraform
 
-    - name: Check if Cloud SQL Instance Exists
+    - name: Import Cloud SQL Instance into Terraform State
       run: |
-        # Check if Cloud SQL instance exists by querying the Google Cloud API
-        gcloud sql instances describe cloud-sql --project awesome-destiny-436710-j1 --format="value(name)" || echo "Instance not found"
-      shell: bash
+        terraform import google_sql_database_instance.my_mysql_instance projects/awesome-destiny-436710-j1/instances/cloud-sql
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json  # Point to the credentials file
+      working-directory: ./src/main/terraform
 
     - name: Terraform Apply
       env:
