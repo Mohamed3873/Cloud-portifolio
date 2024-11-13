@@ -37,20 +37,54 @@ jobs:
         fi
       shell: bash
 
-    - name: Initialize Terraform
+    - name: Debug Environment
+      run: env | sort
+
+    - name: Validate GCP Credentials File Format
+      run: |
+        cat /tmp/gcp_credentials.json | jq .
+      shell: bash
+
+    - name: Terraform Init
       run: terraform init
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
+      working-directory: ./src/main/terraform
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan
+      env:
+        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
+      run: terraform plan
+      working-directory: ./src/main/terraform
+
+    - name: Import Cloud SQL Instance if needed
       env:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
         TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+      run: |
+        if ! terraform state list | grep -q 'google_sql_database_instance.my_mysql_instance'; then
+          echo "Cloud SQL instance not found in state, importing..."
+          terraform import google_sql_database_instance.my_mysql_instance projects/awesome-destiny-436710-j1/instances/cloud-sql
+        else
+          echo "Cloud SQL instance already in state."
+        fi
+      working-directory: ./src/main/terraform
+
+    - name: Import Cloud SQL Database if needed
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
+        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+      run: |
+        if ! terraform state list | grep -q 'google_sql_database.my_database'; then
+          echo "Database not found in state, importing..."
+          terraform import google_sql_database.my_database projects/awesome-destiny-436710-j1/instances/cloud-sql/databases/terraform_database
+        else
+          echo "Database already in state."
+        fi
+      working-directory: ./src/main/terraform
 
     - name: Terraform Apply
-      if: github.event_name == 'push'
-      run: terraform apply -auto-approve tfplan
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
         TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
+      run: terraform apply -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}"
+      working-directory: ./src/main/terraform
