@@ -60,6 +60,12 @@ jobs:
       run: terraform plan
       working-directory: ./src/main/terraform
 
+    - name: Check if Cloud SQL Instance Exists
+      run: |
+        # Check if Cloud SQL instance exists by querying the Google Cloud API
+        gcloud sql instances describe cloud-sql --project awesome-destiny-436710-j1 --format="value(name)" || echo "Instance not found"
+      shell: bash
+
     - name: Terraform Apply
       env:
         TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
