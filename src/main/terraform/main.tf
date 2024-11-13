@@ -37,3 +37,4 @@ resource "google_sql_database" "my_database" {
   name     = "terraform_database"
   instance = google_sql_database_instance.my_mysql_instance.name
 }
+
