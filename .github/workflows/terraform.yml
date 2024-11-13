@@ -65,6 +65,7 @@ jobs:
         terraform import google_sql_database_instance.my_mysql_instance projects/awesome-destiny-436710-j1/instances/cloud-sql
       env:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json  # Point to the credentials file
+        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
       working-directory: ./src/main/terraform
 
     - name: Terraform Apply
