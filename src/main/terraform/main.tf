@@ -18,7 +18,7 @@ resource "google_sql_database_instance" "my_mysql_instance" {
 
       authorized_networks {
         name  = "my-office-network"
-        value = "129.241.236.225"
+        value = "129.241.236.73"
       }
     }
   }
