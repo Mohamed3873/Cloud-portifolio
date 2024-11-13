@@ -16,11 +16,6 @@ resource "google_compute_instance" "backend_server" {
     }
   }
 
-  resource "google_project_iam_member" "backend_sql_access" {
-    project = "awesome-destiny-436710-j1"
-    role    = "roles/cloudsql.client"
-    member  = "serviceAccount:${google_compute_instance.backend_server.service_account_email}"
-  }
 
   # Use a startup script to install and start the Cloud SQL Auth Proxy
   metadata_startup_script = <<-EOT
