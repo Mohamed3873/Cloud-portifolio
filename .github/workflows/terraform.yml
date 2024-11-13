@@ -23,15 +23,12 @@ jobs:
 
     - name: Decode GCP Credentials Secret
       run: |
-        # Decode the base64 encoded GCP credentials secret and save it as a JSON file
         echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > /tmp/gcp_credentials.json
-        # Optionally, print the decoded JSON (be cautious with sensitive info)
         echo "GCP credentials decoded successfully"
       shell: bash
 
     - name: Verify GCP Credentials File
       run: |
-        # Check if the credentials file exists and is not empty
         if [ ! -s /tmp/gcp_credentials.json ]; then
           echo "GCP credentials file is empty or does not exist"
           exit 1
@@ -45,7 +42,6 @@ jobs:
 
     - name: Validate GCP Credentials File Format
       run: |
-        # Validate the JSON format (this will help catch any errors)
         cat /tmp/gcp_credentials.json | jq .
       shell: bash
 
@@ -56,22 +52,33 @@ jobs:
     - name: Terraform Plan
       env:
         TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json  # Point to the credentials file
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       run: terraform plan
       working-directory: ./src/main/terraform
 
-    - name: Import Cloud SQL Instance into Terraform State
+    - name: Import Cloud SQL Instance if needed
       run: |
-        terraform import google_sql_database_instance.my_mysql_instance projects/awesome-destiny-436710-j1/instances/cloud-sql
-        terraform import google_sql_database.my_database projects/awesome-destiny-436710-j1/instances/cloud-sql/databases/terraform_database
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json  # Point to the credentials file
-        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        if ! terraform state list | grep -q 'google_sql_database_instance.my_mysql_instance'; then
+          echo "Cloud SQL instance not found in state, importing..."
+          terraform import google_sql_database_instance.my_mysql_instance projects/awesome-destiny-436710-j1/instances/cloud-sql
+        else
+          echo "Cloud SQL instance already in state."
+        fi
+      working-directory: ./src/main/terraform
+
+    - name: Import Cloud SQL Database if needed
+      run: |
+        if ! terraform state list | grep -q 'google_sql_database.my_database'; then
+          echo "Database not found in state, importing..."
+          terraform import google_sql_database.my_database projects/awesome-destiny-436710-j1/instances/cloud-sql/databases/terraform_database
+        else
+          echo "Database already in state."
+        fi
       working-directory: ./src/main/terraform
 
     - name: Terraform Apply
       env:
         TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json  # Point to the credentials file
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       run: terraform apply -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}"
       working-directory: ./src/main/terraform
