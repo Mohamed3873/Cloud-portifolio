@@ -1,4 +1,5 @@
 terraform.tfvars
 .terraform/
-.env
+src/main/backend/.env
+
 
