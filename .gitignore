@@ -1,4 +1,4 @@
-terraform.tfvars
+/src/main/terraform/terraform.tfstate
 .terraform/
 /src/main/backend/.env
 
