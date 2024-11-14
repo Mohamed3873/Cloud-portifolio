@@ -1,21 +1,21 @@
+# Create firewall rule to allow HTTP and HTTPS traffic to backend server
 resource "google_compute_firewall" "allow_http_https" {
   name    = "allow-http-https"
-  network = "default"
+  network = "default" # Use the default network
 
-  # Allow HTTP and HTTPS traffic
+  # Allow HTTP and HTTPS traffic from the backend server's tag
   allow {
     protocol = "tcp"
     ports    = ["80", "443"]
   }
 
-  # Allow internal traffic and Cloud SQL access
-  allow {
-    protocol = "icmp"
-  }
+  # Define the source of allowed traffic (using source_tags)
+  source_tags = ["backend-server"]
 
   target_tags = ["backend-server"] # Apply this rule to the backend instance
 }
 
+# Define the backend VM with Cloud SQL Auth Proxy configuration
 resource "google_compute_instance" "backend_server" {
   name         = "backend-server"
   machine_type = "e2-micro" # Small, cost-effective instance type
@@ -62,6 +62,9 @@ resource "google_compute_firewall" "allow_sql_proxy" {
     protocol = "tcp"
     ports    = ["3306"] # MySQL port for the Cloud SQL Proxy
   }
+
+  # Define the source of allowed traffic (using source_tags)
+  source_tags = ["backend-server"]
 
   target_tags = ["backend-server"] # Apply to backend server
 }
