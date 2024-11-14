@@ -9,8 +9,8 @@ resource "google_compute_firewall" "allow_http_https" {
     ports    = ["80", "443" , "8080"]
   }
 
-  # Define the source of allowed traffic (using source_tags)
-  source_tags = ["backend-server"]
+  # Allow traffic from any external IP
+  source_ranges = ["0.0.0.0/0"]
 
   target_tags = ["backend-server"] # Apply this rule to the backend instance
 }
