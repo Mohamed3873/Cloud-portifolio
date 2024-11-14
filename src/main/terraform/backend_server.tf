@@ -6,7 +6,7 @@ resource "google_compute_firewall" "allow_http_https" {
   # Allow HTTP and HTTPS traffic from the backend server's tag
   allow {
     protocol = "tcp"
-    ports    = ["80", "443"]
+    ports    = ["80", "443" , "8080"]
   }
 
   # Define the source of allowed traffic (using source_tags)
