@@ -1,5 +1,5 @@
-terraform.tfvars
 .terraform/
 /src/main/backend/.env
+/src/main/terraform/.tfvars
 
 
