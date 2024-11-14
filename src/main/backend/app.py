@@ -10,7 +10,7 @@ load_dotenv()
 
 
 # Connect to the MySQL database
-# Connect to the MySQL database using environment variables
+# Connect to the MySQL database using environment variabless
 def get_db_connection():
     connection = mysql.connector.connect(
         host=os.getenv('DB_HOST'),        # Cloud SQL public IP
