@@ -20,6 +20,11 @@ resource "google_sql_database_instance" "my_mysql_instance" {
         name  = "my-office-network"
         value = "129.241.236.219"
       }
+
+      authorized_networks {
+        name  = "my-vm-network"
+        value = "34.140.243.29"
+      }
     }
   }
 }
