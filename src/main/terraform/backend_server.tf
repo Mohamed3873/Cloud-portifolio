@@ -1,4 +1,21 @@
-# Define the backend VM with Cloud SQL Auth Proxy configuration
+resource "google_compute_firewall" "allow_http_https" {
+  name    = "allow-http-https"
+  network = "default"
+
+  # Allow HTTP and HTTPS traffic
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "443"]
+  }
+
+  # Allow internal traffic and Cloud SQL access
+  allow {
+    protocol = "icmp"
+  }
+
+  target_tags = ["backend-server"] # Apply this rule to the backend instance
+}
+
 resource "google_compute_instance" "backend_server" {
   name         = "backend-server"
   machine_type = "e2-micro" # Small, cost-effective instance type
@@ -16,6 +33,8 @@ resource "google_compute_instance" "backend_server" {
     }
   }
 
+  # Add network tags to apply firewall rule
+  tags = ["backend-server"]
 
   # Use a startup script to install and start the Cloud SQL Auth Proxy
   metadata_startup_script = <<-EOT
@@ -32,4 +51,17 @@ resource "google_compute_instance" "backend_server" {
     # Start the Cloud SQL Auth Proxy to connect to your database instance
     cloud_sql_proxy -instances=awesome-destiny-436710-j1:europe-west1:cloud-sql=tcp:3306 &
   EOT
+}
+
+# Additional firewall rule to allow Cloud SQL Proxy traffic (default allowed)
+resource "google_compute_firewall" "allow_sql_proxy" {
+  name    = "allow-sql-proxy"
+  network = "default" # Use the default network
+
+  allow {
+    protocol = "tcp"
+    ports    = ["3306"] # MySQL port for the Cloud SQL Proxy
+  }
+
+  target_tags = ["backend-server"] # Apply to backend server
 }
