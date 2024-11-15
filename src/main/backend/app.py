@@ -13,10 +13,11 @@ load_dotenv()
 # Connect to the MySQL database using environment variabless
 def get_db_connection():
     connection = mysql.connector.connect(
-        host=os.getenv('DB_HOST'),        # Cloud SQL public IP
-        user=os.getenv('DB_USER'),        # Database username
-        password=os.getenv('DB_PASSWORD'), # Database password
-        database=os.getenv('DB_NAME')     # Database name
+        host=os.getenv('DB_HOST'),
+        port=int(os.getenv("DB_PORT")),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+        database=os.getenv('DB_NAME')
     )
     return connection
 
