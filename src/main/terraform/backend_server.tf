@@ -33,6 +33,10 @@ resource "google_compute_instance" "backend_server" {
     }
   }
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   # Assign the service account to the VM
   service_account {
     email = "test-495@awesome-destiny-436710-j1.iam.gserviceaccount.com"
