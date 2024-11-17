@@ -34,6 +34,9 @@ def get_db_connection():
         print(f"Error while connecting to database: {e}")
         return None
 
+print(f"DB_USER: {os.getenv('DB_USER')}")
+print(f"DB_PASSWORD: {os.getenv('DB_PASSWORD')}")
+
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
