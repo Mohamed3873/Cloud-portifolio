@@ -33,6 +33,14 @@ resource "google_compute_instance" "backend_server" {
     }
   }
 
+  # Assign the service account to the VM
+  service_account {
+    email = "test-495@awesome-destiny-436710-j1.iam.gserviceaccount.com"
+    scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",  # Full access to Cloud APIs
+    ]
+  }
+
   # Add network tags to apply firewall rule
   tags = ["backend-server"]
 
