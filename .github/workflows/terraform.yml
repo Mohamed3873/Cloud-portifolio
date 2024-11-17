@@ -82,9 +82,7 @@ jobs:
         fi
       working-directory: ./src/main/terraform
 
+
     - name: Terraform Apply
-      env:
-        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       run: terraform apply -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}"
       working-directory: ./src/main/terraform
