@@ -18,7 +18,7 @@ def get_db_connection():
         connection = mysql.connector.connect(
             host="127.0.0.1",  # Ensure it connects via Cloud SQL Proxy
             port=3306,
-            user=os.getenv('DB_USER'),
+            user="cloud",
             password=os.getenv('DB_PASSWORD'),
             database=os.getenv('DB_NAME')
         )
