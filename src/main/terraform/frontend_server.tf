@@ -39,6 +39,9 @@ resource "google_compute_instance" "frontend_server" {
       nat_ip = google_compute_address.frontend_static_ip.address
     }
   }
+  lifecycle {
+    prevent_destroy = true
+  }
 
   # Service account with required scopes
   service_account {

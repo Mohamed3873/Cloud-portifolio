@@ -31,6 +31,10 @@ resource "google_compute_instance" "backend_server" {
     }
   }
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
 
 
   network_interface {
