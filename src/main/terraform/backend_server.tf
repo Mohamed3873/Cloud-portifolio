@@ -1,4 +1,4 @@
-# Create firewall rule to allow HTTP and HTTPS traffic to backend server
+#Firewall rule to allow HTTP and HTTPS traffic to backend server
 resource "google_compute_firewall" "allow_http_https" {
   name    = "allow-http-https"
   network = "default" # Use the default network
@@ -12,10 +12,14 @@ resource "google_compute_firewall" "allow_http_https" {
   # Allow traffic from any external IP
   source_ranges = ["0.0.0.0/0"]
 
-  target_tags = ["backend-server"] # Apply this rule to the backend instance
+  target_tags = ["backend-server"]
 }
 
-# Define the backend VM with Cloud SQL Auth Proxy configuration
+resource "google_compute_address" "frontend_static_ip" {
+  name   = "frontend-static-ip"
+  region = "europe-west1"
+}
+
 resource "google_compute_instance" "backend_server" {
   name         = "backend-server"
   machine_type = "e2-micro" # Small, cost-effective instance type
@@ -27,9 +31,12 @@ resource "google_compute_instance" "backend_server" {
     }
   }
 
+
+
   network_interface {
     network = "default"
     access_config {
+      nat_ip = google_compute_address.frontend_static_ip.address
     }
   }
 
