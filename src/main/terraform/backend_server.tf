@@ -15,8 +15,8 @@ resource "google_compute_firewall" "allow_http_https" {
   target_tags = ["backend-server"]
 }
 
-resource "google_compute_address" "frontend_static_ip" {
-  name   = "frontend-static-ip"
+resource "google_compute_address" "backend_static_ip" {
+  name   = "backend-static-ip"
   region = "europe-west1"
 }
 
@@ -36,7 +36,7 @@ resource "google_compute_instance" "backend_server" {
   network_interface {
     network = "default"
     access_config {
-      nat_ip = google_compute_address.frontend_static_ip.address
+      nat_ip = google_compute_address.backend_static_ip.address
     }
   }
 
