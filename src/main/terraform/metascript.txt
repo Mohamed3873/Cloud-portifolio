@@ -15,6 +15,7 @@ GIT_URL="https://github.com/Mohamed3873/Cloud-portifolio.git"
 if [ ! -d "$REPO_DIR" ]; then
     echo "Cloning repository..."
     sudo git clone "$GIT_URL" "$REPO_DIR"
+    sudo git pull  "$GIT_URL"
 else
     echo "Pulling latest changes..."
     cd "$REPO_DIR" && sudo git pull
