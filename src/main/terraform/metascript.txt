@@ -17,6 +17,9 @@ if [ ! -d "$REPO_DIR/.git" ]; then
     echo "Cloning repository..."
     sudo rm -rf "$REPO_DIR"  # Clear any non-git directory
     sudo git clone --branch $BRANCH "$GIT_URL" "$REPO_DIR"
+    cd "$REPO_DIR"
+        sudo git fetch origin
+        sudo git reset --hard origin/$BRANCH
 else
     echo "Pulling latest changes..."
     cd "$REPO_DIR"
