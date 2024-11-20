@@ -18,10 +18,11 @@ if [ ! -d "$REPO_DIR/.git" ]; then
     sudo git clone --branch "$BRANCH" "$GIT_URL" "$REPO_DIR"
 fi
 
-# Navigate to the repository directory and pull the latest changes
+# Always pull the latest changes
 echo "Pulling latest changes..."
 cd "$REPO_DIR"
-sudo git pull origin "$BRANCH"
+sudo git fetch origin
+sudo git reset --hard origin/"$BRANCH"
 
 # Copy the index.html file to the Apache document root
 INDEX_FILE="$REPO_DIR/src/main/frontend/index.html"
@@ -34,6 +35,14 @@ else
     echo "Error: index.html not found."
 fi
 
-# Restart Apache
-sudo systemctl restart apache2
+# Restart Apache and check if the restart is successful
+echo "Restarting Apache..."
+if sudo systemctl restart apache2; then
+    echo "Apache restarted successfully."
+else
+    echo "Error: Apache restart failed." >&2
+    exit 1
+fi
+
+# Ensure Apache is enabled to start on boot
 sudo systemctl enable apache2
