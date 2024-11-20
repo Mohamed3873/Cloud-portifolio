@@ -39,9 +39,6 @@ resource "google_compute_instance" "frontend_server" {
       nat_ip = google_compute_address.frontend_static_ip.address
     }
   }
-  lifecycle {
-    prevent_destroy = true
-  }
 
   # Service account with required scopes
   service_account {
@@ -52,15 +49,7 @@ resource "google_compute_instance" "frontend_server" {
   # Tags for firewall rule application
   tags = ["frontend-server"]
 
-  metadata_startup_script = <<-EOT
-    #!/bin/bash
-    # Update package list and install Apache
-    sudo apt update
-    sudo apt install -y apache2
+  metadata_startup_script = file("${path.module}/metascript.txt")
 
 
-    # Ensure Apache is running
-    sudo systemctl start apache2
-    sudo systemctl enable apache2
-  EOT
 }
