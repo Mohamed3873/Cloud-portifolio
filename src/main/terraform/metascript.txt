@@ -32,6 +32,11 @@ echo "index.html copied to Apache document root."
 sudo chown -R www-data:www-data /var/www/html
 sudo chmod -R 755 /var/www/html
 
-# Ensure Apache is running
 sudo systemctl restart apache2
+if systemctl is-active --quiet apache2; then
+    echo "Apache restarted successfully."
+else
+    echo "Failed to restart Apache. Check the service status."
+    sudo systemctl status apache2
+fi
 sudo systemctl enable apache2
