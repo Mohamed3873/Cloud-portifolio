@@ -18,6 +18,8 @@ echo "Checking if directory exists: $REPO_DIR"
 if [ ! -d "$REPO_DIR" ]; then
     echo "Cloning repository..."
     sudo git clone "$GIT_URL" "$REPO_DIR"
+    sudo git pull origin main  # Pull the latest changes from the main branch
+
 else
     echo "Directory exists. Checking if we can pull latest changes..."
     cd "$REPO_DIR"
