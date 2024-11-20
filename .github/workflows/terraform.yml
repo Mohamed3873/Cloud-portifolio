@@ -52,8 +52,8 @@ jobs:
     - name: Destroy Frontend Server (Clean Up Old Instance)
       run: terraform destroy -target=google_compute_instance.frontend_server -auto-approve
       env:
-          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       working-directory: ./src/main/terraform
 
       
