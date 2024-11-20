@@ -49,6 +49,16 @@ jobs:
       run: terraform init
       working-directory: ./src/main/terraform
 
+    - name: Create .env file for backend
+      run: |
+        echo "DB_HOST=${{ secrets.DB_HOST }}" > ./src/main/backend/.env
+        echo "DB_USER=${{ secrets.DB_USER }}" >> ./src/main/backend/.env
+        echo "DB_PORT=${{ secrets.DB_PORT }}" >> ./src/main/backend/.env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ./src/main/backend/.env
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> ./src/main/backend/.env
+        echo ".env file created successfully"
+      shell: bash
+
     - name: Destroy Frontend Server (Clean Up Old Instance)
       run: terraform destroy -target=google_compute_instance.frontend_server -auto-approve
       env:
