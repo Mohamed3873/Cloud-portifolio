@@ -10,19 +10,23 @@ done
 # Repository configuration
 REPO_DIR="/var/www/html/frontend"
 GIT_URL="https://github.com/Mohamed3873/Cloud-portifolio.git"
+BRANCH="main"
 
-# Clone the repository or pull the latest changes
-if [ ! -d "$REPO_DIR" ]; then
+# Ensure the repository exists and always pull the latest changes
+if [ ! -d "$REPO_DIR/.git" ]; then
     echo "Cloning repository..."
-    sudo git clone "$GIT_URL" "$REPO_DIR"
-    sudo git pull  "$GIT_URL"
+    sudo rm -rf "$REPO_DIR"  # Clear any non-git directory
+    sudo git clone --branch $BRANCH "$GIT_URL" "$REPO_DIR"
 else
     echo "Pulling latest changes..."
-    cd "$REPO_DIR" && sudo git pull
+    cd "$REPO_DIR"
+    sudo git fetch origin
+    sudo git reset --hard origin/$BRANCH
 fi
 
 # Copy the index.html file to the Apache document root
 sudo cp "$REPO_DIR/src/main/frontend/index.html" /var/www/html/
+echo "index.html copied to Apache document root."
 
 # Set permissions for Apache to serve files
 sudo chown -R www-data:www-data /var/www/html
