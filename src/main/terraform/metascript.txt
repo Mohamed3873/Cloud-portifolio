@@ -1,53 +1,31 @@
 #!/bin/bash
 
-# Install git if not already installed
-if ! command -v git &> /dev/null; then
-    echo "Git not found. Installing Git..."
-    sudo apt update
-    sudo apt install -y git
-else
-    echo "Git is already installed."
-fi
+# Update package list and install required tools
+for attempt in {1..3}; do
+    sudo apt update && sudo apt install -y apache2 git && break
+    echo "Attempt $attempt to install packages failed. Retrying..."
+    sleep 5
+done
 
-# Directory where the repository will be cloned
+# Repository configuration
 REPO_DIR="/var/www/html/frontend"
 GIT_URL="https://github.com/Mohamed3873/Cloud-portifolio.git"
 
-# Check if the repository directory exists
-if [ -d "$REPO_DIR" ]; then
-    echo "Directory exists. Checking if it is a Git repository..."
-    cd "$REPO_DIR"
-
-    # Check if it's a git repository
-    if [ -d ".git" ]; then
-        echo "Git repository found. Pulling latest changes..."
-        sudo git pull origin main
-    else
-        echo "Not a Git repository. Cloning repository..."
-        sudo rm -rf "$REPO_DIR"  # Remove existing directory
-        sudo git clone "$GIT_URL" "$REPO_DIR"
-        cd "$REPO_DIR"
-    fi
-else
-    echo "Directory does not exist. Cloning repository..."
+# Clone the repository or pull the latest changes
+if [ ! -d "$REPO_DIR" ]; then
+    echo "Cloning repository..."
     sudo git clone "$GIT_URL" "$REPO_DIR"
-    cd "$REPO_DIR"
-fi
-
-# Ensure the correct path for index.html after pulling/cloning
-INDEX_FILE="$REPO_DIR/src/main/frontend/index.html"
-
-if [ -f "$INDEX_FILE" ]; then
-    # Copy the index.html to the Apache document root
-    echo "Copying index.html to Apache document root..."
-    sudo cp "$INDEX_FILE" /var/www/html/
-
-    # Set permissions for Apache to serve files
-    sudo chown -R www-data:www-data /var/www/html
-    sudo chmod -R 755 /var/www/html
 else
-    echo "Error: index.html not found in the repository"
+    echo "Pulling latest changes..."
+    cd "$REPO_DIR" && sudo git pull
 fi
+
+# Copy the index.html file to the Apache document root
+sudo cp "$REPO_DIR/src/main/frontend/index.html" /var/www/html/
+
+# Set permissions for Apache to serve files
+sudo chown -R www-data:www-data /var/www/html
+sudo chmod -R 755 /var/www/html
 
 # Ensure Apache is running
 sudo systemctl restart apache2
