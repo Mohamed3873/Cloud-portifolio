@@ -30,4 +30,3 @@
     # Ensure Apache is running
     sudo systemctl restart apache2
     sudo systemctl enable apache2
-  EOT
