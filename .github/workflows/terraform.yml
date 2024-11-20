@@ -102,6 +102,8 @@ jobs:
         bash ./src/main/terraform/metascript.txt
 
     - name: Set deploy_trigger metadata to 'rebuild'
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       run: |
         gcloud compute instances add-metadata frontend-server \
             --metadata deploy_trigger=rebuild \
