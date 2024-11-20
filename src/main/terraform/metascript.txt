@@ -46,3 +46,12 @@ fi
 
 # Ensure Apache is enabled to start on boot
 sudo systemctl enable apache2
+
+# Stop Apache first to ensure no issues with in-use files
+sudo systemctl stop apache2
+echo "Pulling latest changes from the repository..."
+cd /var/www/html/frontend && git pull origin master
+echo "Copying index.html to Apache document root..."
+cp /var/www/html/frontend/index.html /var/www/html
+echo "Restarting Apache..."
+sudo systemctl start apache2
