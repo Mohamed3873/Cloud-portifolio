@@ -11,13 +11,12 @@
     REPO_DIR="/var/www/html/frontend"
     GIT_URL="https://github.com/Mohamed3873/Cloud-portifolio.git"
 
-    # Clone the repository or pull the latest changes
     if [ ! -d "$REPO_DIR" ]; then
         echo "Cloning repository..."
         sudo git clone "$GIT_URL" "$REPO_DIR"
     else
         echo "Pulling latest changes..."
-        cd "$REPO_DIR" && sudo git pull
+        cd "$REPO_DIR" && sudo git fetch && sudo git status && sudo git pull || echo "Git pull failed"
     fi
 
     # Copy the index.html file to the Apache document root
