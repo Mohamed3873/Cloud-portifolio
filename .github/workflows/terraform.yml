@@ -51,11 +51,11 @@ jobs:
 
     - name: Create .env file for backend
       run: |
-        echo "DB_HOST=${{ secrets.DB_HOST }}" > ./src/main/backend/.env
-        echo "DB_USER=${{ secrets.DB_USER }}" >> ./src/main/backend/.env
-        echo "DB_PORT=${{ secrets.DB_PORT }}" >> ./src/main/backend/.env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ./src/main/backend/.env
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> ./src/main/backend/.env
+        echo "DB_HOST=${{ secrets.DB_HOST }}" > ./home/ubuntu/Cloud-portifolio/src/main/backend/.env
+        echo "DB_USER=${{ secrets.DB_USER }}" >> ./home/ubuntu/Cloud-portifolio/src/main/backend/.env
+        echo "DB_PORT=${{ secrets.DB_PORT }}" >> ./home/ubuntu/Cloud-portifolio/src/main/backend/.env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ./home/ubuntu/Cloud-portifolio/src/main/backend/.env
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> ./home/ubuntu/Cloud-portifolio/src/main/backend/.env
         echo ".env file created successfully"
       shell: bash
 
