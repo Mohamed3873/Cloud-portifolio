@@ -1,44 +1,62 @@
 #!/bin/bash
-# Update package list and install required tools
 
+# Define repository and backend details
+PARENT_DIR="/home/ubuntu"
+REPO_NAME="Cloud-portifolio"
+REPO_DIR="$PARENT_DIR/$REPO_NAME/src/main/backend"
+GIT_URL="https://github.com/Mohamed3873/Cloud-portifolio.git"
+
+# Update package list and install required tools
 for attempt in {1..3}; do
-    sudo apt update && sudo apt install -y python3 python3-pip python3-venv git curl mariadb-client && break
+    sudo apt update && sudo apt install -y python3 python3-pip python3-venv git curl mariadb-client libmariadb-dev
+    if [ $? -eq 0 ]; then
+        break
+    fi
     echo "Attempt $attempt to install packages failed. Retrying..."
     sleep 5
 done
 
-# Clone the repository or pull the latest changes
-REPO_DIR="/src/main/backend"
-GIT_URL="https://github.com/Mohamed3873/Cloud-portifolio.git"
-
-# Clone the repository or pull the latest changes
-if [ ! -d "$REPO_DIR" ]; then
-    echo "Cloning repository..."
-    sudo git clone "$GIT_URL" "$REPO_DIR"
+# Clone the repository if not already cloned
+if [ ! -d "$PARENT_DIR/$REPO_NAME" ]; then
+    echo "Cloning repository into $PARENT_DIR..."
+    sudo git clone "$GIT_URL" "$PARENT_DIR/$REPO_NAME"
 else
     echo "Pulling latest changes..."
-    cd "$REPO_DIR" && sudo git pull
+    cd "$PARENT_DIR/$REPO_NAME" && sudo git pull
+fi
+
+# Ensure we navigate to the correct backend directory
+if [ ! -d "$REPO_DIR" ]; then
+    echo "Error: Backend directory not found at $REPO_DIR"
+    exit 1
 fi
 
 # Install the Cloud SQL Auth Proxy
-curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
-chmod +x cloud_sql_proxy
-sudo mv cloud_sql_proxy /usr/local/bin/
+if ! command -v cloud_sql_proxy &> /dev/null; then
+    echo "Installing Cloud SQL Auth Proxy..."
+    curl -o cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
+    chmod +x cloud_sql_proxy
+    sudo mv cloud_sql_proxy /usr/local/bin/
+fi
 
 # Start the Cloud SQL Auth Proxy to connect to your database instance
+echo "Starting Cloud SQL Auth Proxy..."
 cloud_sql_proxy -instances=awesome-destiny-436710-j1:europe-west1:cloud-sql=tcp:3306 &
 
-# Install backend dependencies using pip (manual installation)
+# Navigate to backend directory
 cd "$REPO_DIR"
-sudo pip3 install python-dotenv flask mariadb
 
-# Set permissions and ensure the backend app is ready
-sudo chown -R ubuntu:ubuntu /home/ubuntu/backend
-sudo chmod -R 755 /home/ubuntu/backend
+# Set up and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install required Python packages inside the virtual environment
+pip install flask mysql-connector-python python-dotenv flask-cors
+
+# Set permissions for the backend folder
+sudo chown -R $(whoami):$(whoami) "$PARENT_DIR/$REPO_NAME"
+sudo chmod -R 755 "$PARENT_DIR/$REPO_NAME"
 
 # Start the Flask application
-cd /src/main/backend
-sudo python3 app.py &
-
-# Ensure the Flask app is running
-sudo systemctl enable app.service
+echo "Starting the Flask application..."
+python3 app.py &
