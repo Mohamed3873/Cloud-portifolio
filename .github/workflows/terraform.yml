@@ -101,6 +101,12 @@ jobs:
       run: |
         bash ./src/main/terraform/metascript.txt
 
+    - name: Authenticate with GCP
+      run: |
+        gcloud auth activate-service-account --key-file=/tmp/gcp_credentials.json
+        gcloud config set project awesome-destiny-436710-j1  # Replace with your GCP project ID
+
+
     - name: Set deploy_trigger metadata to 'rebuild'
       env:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
