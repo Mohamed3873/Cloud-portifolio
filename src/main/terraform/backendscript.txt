@@ -31,6 +31,15 @@ if [ ! -d "$REPO_DIR" ]; then
     exit 1
 fi
 
+# Load environment variables from the .env file
+if [ -f "$REPO_DIR/.env" ]; then
+    export $(cat $REPO_DIR/.env | xargs)
+    echo ".env file loaded successfully"
+else
+    echo "Error: .env file not found!"
+    exit 1
+fi
+
 # Install the Cloud SQL Auth Proxy
 if ! command -v cloud_sql_proxy &> /dev/null; then
     echo "Installing Cloud SQL Auth Proxy..."
@@ -53,14 +62,7 @@ source venv/bin/activate
 # Install required Python packages inside the virtual environment
 pip install flask mysql-connector-python python-dotenv flask-cors
 
-# Load environment variables from the .env file
-if [ -f "$REPO_DIR/.env" ]; then
-    export $(cat $REPO_DIR/.env | xargs)
-    echo ".env file loaded successfully"
-else
-    echo "Error: .env file not found!"
-    exit 1
-fi
+
 
 # Set permissions for the backend folder
 sudo chown -R $(whoami):$(whoami) "$PARENT_DIR/$REPO_NAME"
