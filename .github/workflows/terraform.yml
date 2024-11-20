@@ -89,6 +89,19 @@ jobs:
         fi
       working-directory: ./src/main/terraform
 
+    - name: Import Frontend Server if needed
+      env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
+      run: |
+        if ! terraform state list | grep -q 'google_compute_instance.frontend_server'; then
+          echo "Frontend server not found in state, importing..."
+          terraform import google_compute_instance.frontend_server projects/awesome-destiny-436710/zones/europe-west1-b/instances/frontend-server
+        else
+          echo "Frontend server already in state."
+        fi
+      working-directory: ./src/main/terraform
+
+
 
     - name: Terraform Apply
       env:
