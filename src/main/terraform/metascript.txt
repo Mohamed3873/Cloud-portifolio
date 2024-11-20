@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Install git if not already installed
+if ! command -v git &> /dev/null; then
+    echo "Git not found. Installing Git..."
+    sudo apt update
+    sudo apt install -y git
+else
+    echo "Git is already installed."
+fi
+
 # Directory where the repository will be cloned
 REPO_DIR="/var/www/html/frontend"
 GIT_URL="https://github.com/Mohamed3873/Cloud-portifolio.git"
