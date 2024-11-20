@@ -49,13 +49,6 @@ jobs:
       run: terraform init
       working-directory: ./src/main/terraform
 
-    - name: Destroy Frontend Server (Clean Up Old Instance)
-      run: terraform destroy -target=google_compute_instance.frontend_server -auto-approve
-      env:
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
-      working-directory: ./src/main/terraform
-
       
     - name: Terraform Refresh
       env:
@@ -107,3 +100,16 @@ jobs:
     - name: Run deployment script
       run: |
         bash ./src/main/terraform/metascript.txt
+
+    - name: Set deploy_trigger metadata to 'rebuild'
+      run: |
+        gcloud compute instances add-metadata frontend-server \
+            --metadata deploy_trigger=rebuild \
+            --zone europe-west1-b
+
+      # Step 4: Wait for the server to rebuild
+    - name: Wait for the server to rebuild
+      run: |
+        echo "Waiting for server to rebuild..."
+         sleep 60  # Adjust the wait time based on your server's rebuild time
+
