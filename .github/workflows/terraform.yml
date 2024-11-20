@@ -48,6 +48,14 @@ jobs:
     - name: Terraform Init
       run: terraform init
       working-directory: ./src/main/terraform
+
+    - name: Destroy Frontend Server (Clean Up Old Instance)
+      run: terraform destroy -target=google_compute_instance.frontend_server -auto-approve
+      env:
+          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      working-directory: ./src/main/terraform
+
       
     - name: Terraform Refresh
       env:
