@@ -55,11 +55,10 @@ source venv/bin/activate
 pip install flask mysql-connector-python python-dotenv flask-cors
 
 
-
 # Set permissions for the backend folder
 sudo chown -R $(whoami):$(whoami) "$PARENT_DIR/$REPO_NAME"
 sudo chmod -R 755 "$PARENT_DIR/$REPO_NAME"
 
 # Start the Flask application
-echo "Starting the Flask application..."
+echo "Starting the Flask application...."
 python3 app.py &
