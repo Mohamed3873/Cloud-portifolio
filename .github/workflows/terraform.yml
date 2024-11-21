@@ -145,7 +145,7 @@ jobs:
 
     - name: Rollback on Failure
       if: failure()
-      run: terraform apply -auto-approve -refresh-only
+      run: terraform apply -auto-approve -refresh-only -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
       working-directory: ./src/main/terraform
   
 
