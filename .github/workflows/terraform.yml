@@ -58,15 +58,9 @@ jobs:
       run: terraform init
       working-directory: ./src/main/terraform
 
-    - name: Export environment variables for backend
-      run: |
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
-            echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
-            echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-            echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
-            echo "Environment variables exported successfully"
-      shell: bash
+    - name: Terraform Validate
+      run: terraform validate
+      working-directory: ./src/main/terraform
 
     - name: Destroy Frontend Server (Clean Up Old Instance)
       run: terraform destroy -target=google_compute_instance.frontend_server -auto-approve
@@ -89,6 +83,7 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       run: terraform refresh
       working-directory: ./src/main/terraform
+
 
     - name: Terraform Plan
       env:
