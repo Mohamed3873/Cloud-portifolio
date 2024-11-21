@@ -148,6 +148,15 @@ jobs:
         curl --fail http://34.77.4.205:8080/data || exit 1
       shell: bash
 
+    - name: Verify MySQL/MariaDB Connectivity
+      run: |
+            mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD -e "SELECT 1;" || exit 1
+      shell: bash
+      env:
+           DB_HOST: ${{ secrets.DB_HOST }}
+           DB_USER: ${{ secrets.DB_USER }}
+           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
   
 
 
