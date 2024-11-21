@@ -142,6 +142,12 @@ jobs:
       run: terraform apply -refresh=true -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
       working-directory: ./src/main/terraform
 
+      # Service Verification for Backend and Database
+    - name: Verify Backend Service is Running
+      run: |
+        curl --fail http://34.77.4.205:8080/data || exit 1
+      shell: bash
+
 
 
 
