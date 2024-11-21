@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  terraform:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -136,18 +136,44 @@ jobs:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       run: terraform apply -refresh=true -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
       working-directory: ./src/main/terraform
+      
+  verify_backend:
+    runs-on: ubuntu-latest
+    needs: deploy  
+    steps:
+      # Checkout code again to run tests
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # Service Verification for Backend and Database
-    - name: Verify Backend Service is Running
-      run: |
-        curl --fail http://34.77.4.205:8080/data || exit 1
-      shell: bash
+      # Verify Backend Service is Running
+      - name: Verify Backend Service is Running
+        run: |
+          curl --fail http://34.77.4.205:8080/data || exit 1
+        shell: bash
 
-    - name: Rollback on Failure
-      if: failure()
-      run: terraform apply -auto-approve -refresh-only -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
-      working-directory: ./src/main/terraform
-  
+      # Run Backend Tests
+      - name: Run Backend Tests
+        run: |
+          python ./src/main/backend/test.py 
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
+  rollback:
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: failure()  # Rollback will only run if the "deploy" job fails
+    steps:
+      # Checkout code for rollback action
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Rollback Terraform Apply if needed
+      - name: Rollback on Failure
+        run: terraform apply -auto-approve -refresh-only -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
+        working-directory: ./src/main/terraform
 
 
