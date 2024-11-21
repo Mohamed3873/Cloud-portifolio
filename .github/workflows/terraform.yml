@@ -150,7 +150,7 @@ jobs:
 
     - name: Verify Database Connectivity
       run: |
-        mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD -e "SHOW DATABASES;" || exit 1
+        mariadb -h $DB_HOST -u $DB_USER -p"$DB_PASSWORD" -e "SHOW DATABASES;" || exit 1
       shell: bash
 
 
