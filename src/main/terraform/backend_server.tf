@@ -20,13 +20,6 @@ resource "google_compute_address" "backend_static_ip" {
   region = "europe-west1"
 }
 
-metadata = {
-  DB_USER     = var.db_user
-  DB_PASSWORD = var.db_password
-  DB_HOST     = var.db_host
-  DB_PORT     = var.db_port
-  DB_NAME     = var.db_name
-}
 
 resource "google_compute_instance" "backend_server" {
   name         = "backend-server"
@@ -37,6 +30,14 @@ resource "google_compute_instance" "backend_server" {
     initialize_params {
       image = "debian-cloud/debian-11" # Example image
     }
+  }
+
+  metadata = {
+    DB_USER     = var.db_user
+    DB_PASSWORD = var.db_password
+    DB_HOST     = var.db_host
+    DB_PORT     = var.db_port
+    DB_NAME     = var.db_name
   }
 
 
