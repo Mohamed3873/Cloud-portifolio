@@ -142,6 +142,11 @@ jobs:
       run: |
         curl --fail http://34.77.4.205:8080/data || exit 1
       shell: bash
+
+    - name: Rollback on Failure
+      if: failure()
+      run: terraform apply -auto-approve -refresh-only
+      working-directory: ./src/main/terraform
   
 
 
