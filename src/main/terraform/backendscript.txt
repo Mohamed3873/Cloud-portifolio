@@ -6,6 +6,18 @@ REPO_NAME="Cloud-portifolio"
 REPO_DIR="$PARENT_DIR/$REPO_NAME/src/main/backend"
 GIT_URL="https://github.com/Mohamed3873/Cloud-portifolio.git"
 
+# Fetch metadata for DB configurations
+export DB_USER=$(curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_USER")
+export DB_PASSWORD=$(curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_PASSWORD")
+export DB_HOST=$(curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_HOST")
+export DB_PORT=$(curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_PORT")
+export DB_NAME=$(curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/DB_NAME")
+
+# Optionally, print the variables to verify they are being set (for debugging)
+echo "DB_USER: $DB_USER"
+echo "DB_PASSWORD: $DB_PASSWORD"
+echo "DB_HOST: $DB_HOST"
+echo "DB_PORT: $DB_PORT"
 echo "DB_USER: $DB_USER"
 echo "DB_PASSWORD: $DB_PASSWORD"
 
