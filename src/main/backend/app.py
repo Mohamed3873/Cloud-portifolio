@@ -16,11 +16,12 @@ def get_db_connection():
         print(f"Attempting to connect to database with user: {os.getenv('DB_USER')}")
 
         connection = mysql.connector.connect(
-            host="127.0.0.1",  # Ensure it connects via Cloud SQL Proxy
-            port=3306,
-            user="cloud",
+            host=os.getenv('DB_HOST', '127.0.0.1'),  # Ensure it connects via Cloud SQL Proxy
+            port=os.getenv('DB_PORT', '3306'),
+            user=os.getenv('DB_USER'),
             password=os.getenv('DB_PASSWORD'),
             database=os.getenv('DB_NAME')
+
         )
 
         if connection.is_connected():
@@ -64,4 +65,4 @@ def fetch_data():
         return jsonify({'error': f'Database query failed: {e}'}), 500
 
 if __name__ == '__main__':
-    app.run(debug = True,host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=8080)
