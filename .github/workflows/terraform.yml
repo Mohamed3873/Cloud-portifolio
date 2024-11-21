@@ -49,14 +49,14 @@ jobs:
       run: terraform init
       working-directory: ./src/main/terraform
 
-    - name: Create .env file for backend
+    - name: Export environment variables for backend
       run: |
-        echo "DB_HOST=${{ secrets.DB_HOST }}" > ./src/main/backend/.env
-        echo "DB_USER=${{ secrets.DB_USER }}" >> ./src/main/backend/.env
-        echo "DB_PORT=${{ secrets.DB_PORT }}" >> ./src/main/backend/.env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ./src/main/backend/.env
-        echo "DB_NAME=${{ secrets.DB_NAME }}" >> ./src/main/backend/.env
-        echo ".env file created successfully"
+            echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+            echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+            echo "DB_PORT=${{ secrets.DB_PORT }}" >> $GITHUB_ENV
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+            echo "Environment variables exported successfully"
       shell: bash
 
     - name: Destroy Frontend Server (Clean Up Old Instance)
