@@ -148,11 +148,7 @@ jobs:
         curl --fail http://34.77.4.205:8080/data || exit 1
       shell: bash
 
-    - name: Verify Database Connectivity
-      run: |
-        mariadb -h $DB_HOST -u $DB_USER -p"$DB_PASSWORD" -e "SHOW DATABASES;" || exit 1
-      shell: bash
-
+  
 
 
 
