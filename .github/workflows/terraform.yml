@@ -98,7 +98,7 @@ jobs:
         TF_VAR_db_name: ${{ secrets.DB_NAME}}
         TF_VAR_db_port: ${{ secrets.DB_PORT}}
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
-      run: terraform plan
+      run: terraform plan -refresh=true
       working-directory: ./src/main/terraform
 
     - name: Import Cloud SQL Instance if needed
@@ -139,7 +139,7 @@ jobs:
     - name: Terraform Apply
       env:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
-      run: terraform apply -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
+      run: terraform apply -refresh=true -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
       working-directory: ./src/main/terraform
 
 
