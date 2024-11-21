@@ -7,7 +7,6 @@ from mysql.connector import Error
 
 app = Flask(__name__)
 CORS(app)
-load_dotenv()
 
 # Connect to the MySQL database
 def get_db_connection():
