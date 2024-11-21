@@ -20,6 +20,14 @@ resource "google_compute_address" "backend_static_ip" {
   region = "europe-west1"
 }
 
+metadata = {
+  DB_USER     = var.db_user
+  DB_PASSWORD = var.db_password
+  DB_HOST     = var.db_host
+  DB_PORT     = var.db_port
+  DB_NAME     = var.db_name
+}
+
 resource "google_compute_instance" "backend_server" {
   name         = "backend-server"
   machine_type = "e2-micro" # Small, cost-effective instance type
