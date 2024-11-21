@@ -2,8 +2,7 @@ import os
 import requests
 
 # Load environment variables from .env
-from dotenv import load_dotenv
-load_dotenv()
+
 
 BACKEND_URL = os.getenv("BACKEND_URL", "http://34.77.4.205:8080")
 
