@@ -27,9 +27,9 @@ jobs:
       shell: bash
 
     - name: Lint Terraform Files with TFLint
-      run: tflint ./src/main/terraform
+      run: tflint --chdir ./src/main/terraform
       shell: bash
-
+      
     - name: Decode GCP Credentials Secret
       run: |
         echo "${{ secrets.GCP_CREDENTIALS }}" | base64 --decode > /tmp/gcp_credentials.json
