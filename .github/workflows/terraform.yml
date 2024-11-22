@@ -132,6 +132,7 @@ jobs:
 
    
     - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       env:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       run: terraform apply -refresh=true -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
