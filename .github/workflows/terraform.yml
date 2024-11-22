@@ -162,6 +162,23 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
+          
+  test_frontend:
+    runs-on: ubuntu-latest
+    needs: deploy  # Run this after deployment
+
+    steps:
+    - name: Check Frontend Accessibility
+      run: |
+        curl --fail http://34.78.241.203/ || exit 1
+      shell: bash
+
+    - name: Verify Page Content
+      run: |
+        curl http://34.78.241.203/ -s | grep -q '<h1>Items from Database destroy</h1>' || exit 1
+      shell: bash
+
+
   rollback:
     runs-on: ubuntu-latest
     needs: deploy
