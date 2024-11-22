@@ -145,19 +145,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-        # Install MySQL Client
-      - name: Install Mariadb Client
-        run: sudo apt-get install mariadb-client -y
-        shell: bash
-
-      # Test Database Connectivity
-      - name: Test Database Connectivity
-        env:
-             TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
-        run: |
-          mysql -h ${{ secrets.DB_HOST }} -u ${{ secrets.DB_USER }} -p${{ secrets.DB_NAME }} -e "SHOW DATABASES;"
-        shell: bash
-
       # Verify Backend Service is Running
       - name: Verify Backend Service is Running
         run: |
