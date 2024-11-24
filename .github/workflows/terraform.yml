@@ -177,6 +177,14 @@ jobs:
         echo "Waiting for 30 seconds to ensure the frontend is up..."
         sleep 30
 
+    - name: Install Cypress
+      run: npm install
+      working-directory: ./src/main/frontend
+
+    - name: Run Cypress Tests
+      run: npx cypress run
+      working-directory: ./src/main/frontend
+
     - name: Check Frontend Accessibility
       run: |
         curl --fail http://34.78.241.203/ || exit 1
