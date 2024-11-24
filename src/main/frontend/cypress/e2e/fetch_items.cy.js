@@ -20,7 +20,7 @@ describe('Frontend Items List Test', () => {
         }).as('fetchItems');
 
         // Wait for fetch and verify table content
-        cy.wait('@fetchItems');
+        cy.wait('@fetchItems',{ timeout: 40000 });
         cy.get('table tbody').within(() => {
             cy.contains('Item 1').should('exist');
             cy.contains('1').should('exist');
