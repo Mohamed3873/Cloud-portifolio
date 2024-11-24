@@ -179,6 +179,7 @@ jobs:
       run: |
         echo "Waiting for 30 seconds to ensure the frontend is up..."
         sleep 30
+        
     - name: List All Files
       run: |
             echo "Listing all files:"
@@ -187,7 +188,7 @@ jobs:
 
     - name: Install dependencies
       run: npm install
-      working-directory: ./frontend
+      working-directory: ./src/main/frontend
 
     - name: Run Cypress Tests
       run: npx cypress run
