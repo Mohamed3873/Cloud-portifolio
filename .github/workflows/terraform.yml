@@ -172,6 +172,9 @@ jobs:
 
     steps:
 
+    - name: Checkout the repository
+      uses: actions/checkout@v4
+
     - name: Wait for Frontend to Be Ready
       run: |
         echo "Waiting for 30 seconds to ensure the frontend is up..."
