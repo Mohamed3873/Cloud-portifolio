@@ -7,24 +7,22 @@ describe('Frontend Items List Test', () => {
         // Verify the page title
         cy.contains('Items from Database').should('be.visible');
 
+        cy.intercept('GET', 'http://34.77.4.205:8080/data').as('fetchItems')
+            .then((interception) => {
+                console.log('Intercepted:', interception);
+            });
+
         // Verify the Fetch Items button exists
         cy.get('button').contains('Fetch Items').should('be.visible').click();
 
-        // Mock backend response
-        cy.intercept('GET', 'http://34.77.4.205:8080/data', {
-            statusCode: 200,
-            body: [
-                { id: 1, name: 'Item 1' },
-                { id: 2, name: 'Item 2' },
-            ],
-        }).as('fetchItems');
+
 
         // Wait for fetch and verify table content
         cy.wait('@fetchItems',{ timeout: 40000 });
         cy.get('table tbody').within(() => {
-            cy.contains('Item 1').should('exist');
+            cy.contains('Item1').should('exist');
             cy.contains('1').should('exist');
-            cy.contains('Item 2').should('exist');
+            cy.contains('Item2').should('exist');
             cy.contains('2').should('exist');
         });
     });
