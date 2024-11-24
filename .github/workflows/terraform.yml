@@ -178,7 +178,7 @@ jobs:
         sleep 30
 
     - name: Install Cypress
-      run: npm install
+      run: npm ci
       working-directory: ./src/main/frontend
 
     - name: Run Cypress Tests
