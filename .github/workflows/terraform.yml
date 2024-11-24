@@ -176,17 +176,15 @@ jobs:
       run: |
         echo "Waiting for 30 seconds to ensure the frontend is up..."
         sleep 30
-
-    - name: Verify Current Working Directory
+    - name: List All Files
       run: |
-         echo "Current directory:"
-         pwd
-         echo "Listing files:"
-         ls -la ./src/main/frontend
+            echo "Listing all files:"
+            ls -R
+
 
     - name: Install dependencies
       run: npm install
-      working-directory: ./src/main/frontend
+      working-directory: ./frontend
 
     - name: Run Cypress Tests
       run: npx cypress run
