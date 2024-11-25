@@ -138,18 +138,6 @@ jobs:
       run: terraform apply -refresh=true -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
       working-directory: ./src/main/terraform
 
-    - name: Verify Frontend Instance Availability with Ping
-      run: |
-         echo "Pinging frontend instance (IP: 34.78.241.203)..."
-         ping -c 3 34.78.241.203 || exit 1
-         echo "Frontend instance is reachable."
-
-    - name: Verify Backend Instance Availability with Ping
-      run: |
-       echo "Pinging backend instance (IP: 34.77.4.205)..."
-       ping -c 3 34.77.4.205 || exit 1
-       echo "Backend instance is reachable."
-
       
   verify_backend:
     runs-on: ubuntu-latest
@@ -165,6 +153,12 @@ jobs:
         run: |
           curl --fail http://34.77.4.205:8080/data || exit 1
         shell: bash
+        
+      # Database Validation 
+      - name: Validate Database
+        run: |
+          sudo apt-get update && sudo apt-get install -y mysql-client
+          mysql -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }} -h${{ secrets.DB_HOST }} -e "SHOW DATABASES;"
 
       # Run Backend Tests
       - name: Run Backend Tests
