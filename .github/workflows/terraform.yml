@@ -138,14 +138,18 @@ jobs:
       run: terraform apply -refresh=true -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
       working-directory: ./src/main/terraform
 
-    # Post-Deployment Verification (
-    - name: Verify Deployed Resources
-      env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
+    - name: Verify Frontend Instance Availability with Ping
       run: |
-          echo "Verifying deployed resources..."
-          gcloud compute instances list --filter="name:frontend_server"
-          gcloud sql databases describe terraform_database --instance cloud-sql
+         echo "Pinging frontend instance (IP: 34.78.241.203)..."
+         ping -c 3 34.78.241.203 || exit 1
+         echo "Frontend instance is reachable."
+
+    - name: Verify Backend Instance Availability with Ping
+      run: |
+       echo "Pinging backend instance (IP: 34.77.4.205)..."
+       ping -c 3 34.77.4.205 || exit 1
+       echo "Backend instance is reachable."
+
       
   verify_backend:
     runs-on: ubuntu-latest
