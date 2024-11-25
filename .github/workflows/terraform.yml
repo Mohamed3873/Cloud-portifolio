@@ -188,7 +188,7 @@ jobs:
       run: |
           echo "Waiting for frontend readiness..."
           for i in {1..12}; do
-            if curl --fail http://<frontend-url>/ > /dev/null 2>&1; then
+            if curl --fail http://34.78.241.203/ > /dev/null 2>&1; then
               echo "Frontend is ready!"
               break
             fi
