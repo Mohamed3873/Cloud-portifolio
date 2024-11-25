@@ -155,7 +155,7 @@ jobs:
         shell: bash
 
       # Verify Backend data retrival form the database 
-      - name: Verify Backend Service is Running
+      - name: Verify Backend data retrival form the database 
         run: |
           curl --fail http://34.77.4.205:8080/data || exit 1
         shell: bash
@@ -183,10 +183,19 @@ jobs:
     - name: Checkout the repository
       uses: actions/checkout@v4
 
-    - name: Wait for Frontend to Be Ready
+     # Dynamic Readiness Check (Step 6)
+    - name: Wait for Frontend Readiness
       run: |
-        echo "Waiting for 30 seconds to ensure the frontend is up..."
-        sleep 30
+          echo "Waiting for frontend readiness..."
+          for i in {1..12}; do
+            if curl --fail http://<frontend-url>/ > /dev/null 2>&1; then
+              echo "Frontend is ready!"
+              break
+            fi
+            echo "Retrying... ($i/12)"
+            sleep 5
+          done || (echo "Frontend readiness check failed"; exit 1)
+
         
     - name: List All Files
       run: |
