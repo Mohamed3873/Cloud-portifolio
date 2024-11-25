@@ -137,6 +137,15 @@ jobs:
         GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
       run: terraform apply -refresh=true -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}" -var="db_user=${{ secrets.DB_USER }}" -var="db_host=${{ secrets.DB_HOST }}" -var="db_port=${{ secrets.DB_PORT }}" -var="db_name=${{ secrets.DB_NAME }}"
       working-directory: ./src/main/terraform
+
+    # Post-Deployment Verification (
+    - name: Verify Deployed Resources
+      env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
+      run: |
+          echo "Verifying deployed resources..."
+          gcloud compute instances list --filter="name:frontend_server"
+          gcloud sql databases describe terraform_database --instance cloud-sql
       
   verify_backend:
     runs-on: ubuntu-latest
