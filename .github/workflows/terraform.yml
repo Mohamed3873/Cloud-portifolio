@@ -147,30 +147,22 @@ jobs:
       # Checkout code again to run tests
       - name: Checkout code
         uses: actions/checkout@v2
-
+        
       # Verify Backend Service is Running
+      - name: Verify Backend Service is Running
+        run: |
+          curl --fail http://34.77.4.205:8080 || exit 1
+        shell: bash
+
+      # Verify Backend data retrival form the database 
       - name: Verify Backend Service is Running
         run: |
           curl --fail http://34.77.4.205:8080/data || exit 1
         shell: bash
-        
-      
-      - name: 'Check MySQL Port'
-        run: |
-            echo "Checking MySQL port 3306..."
-            nc -zv 127.0.0.1 3306
-            if [ $? -ne 0 ]; then
-            echo "Database port is not accessible!"
-            exit 1
-            else
-            echo "Database is reachable."
-            fi
-        env:
-            GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp_credentials.json
 
 
       # Run Backend Tests
-      - name: Run Backend Tests
+      - name: Run Backend Api Tests
         run: |
           python ./src/main/backend/test.py 
         env:
